@@ -1,0 +1,59 @@
+#include <iostream>
+#include <stdexcept>
+#include <iomanip>
+using namespace std;
+
+class TimeException : public out_of_range {
+private:
+    int hours;
+    int minutes;
+    int seconds;
+
+public:
+    TimeException(const string& message, int h, int m, int s)
+        : out_of_range(message), hours(h), minutes(m), seconds(s) {}
+
+    void printDetails() const {
+        cout << "Недопустимые значения времени: "
+             << hours << " часов, "
+             << minutes << " минут, "
+             << seconds << " секунд." << endl;
+    }
+};
+
+class Time {
+private:
+    int hours;
+    int minutes;
+    int seconds;
+
+public:
+    Time(int h, int m, int s) {
+        if (h < 0 || h > 23 || m < 0 || m > 59 || s < 0 || s > 59) {
+            throw TimeException("Недопустимые значения времени!", h, m, s);
+        }
+        hours = h;
+        minutes = m;
+        seconds = s;
+    }
+
+    void display() const {
+        cout << "Время: " << setfill('0') << setw(2) << hours << ":"
+             << setw(2) << minutes << ":" << setw(2) << seconds << endl;
+    }
+};
+
+int main() {
+    try {
+        Time t1(12, 30, 45);
+        t1.display();
+        Time t2(25, 61, 70); 
+        t2.display();
+    } catch (const TimeException& e) {
+        cout << e.what() << endl; 
+        e.printDetails();         
+    } catch (const exception& e) {
+        cout << "Ошибка: " << e.what() << endl; 
+    }
+    return 0;
+}
